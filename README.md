@@ -8,4 +8,5 @@ This repository is for Binusian where they can use the python script for printin
 
 - [x] Create Authentication Function
 - [x] Create View Function for request API Request
+- [ ] Create Insert Logbook Function for API Request
 - [ ] Create Django REST API serving the API Endpoint
