@@ -1,11 +1,14 @@
 import requests
+import stdiomask
 from api.enrichment import auth
 from api.enrichment import activity
 from api.enrichment import cli
 
 if __name__ == "__main__":
     session = requests.Session()
-    response = auth.login(session)
+    username = input("[!] Username Binusmaya : ")
+    password = stdiomask.getpass(mask="", prompt="[!] Password Binusmaya : ")
+    response = auth.login(session, username, password)
     if response == "Error":
         exit(1)
     
