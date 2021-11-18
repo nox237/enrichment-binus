@@ -1,7 +1,7 @@
 import requests
-from enrichment import auth
-from enrichment import activity
-from enrichment import cli
+from api.enrichment import auth
+from api.enrichment import activity
+from api.enrichment import cli
 
 if __name__ == "__main__":
     session = requests.Session()
