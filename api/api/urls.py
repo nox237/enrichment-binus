@@ -18,4 +18,5 @@ from endpoints import views
 
 urlpatterns = [
     path('api/list-logbook', views.ListLogbook.as_view(), name="example")
+    path('api/monthly-report', views.ListMonthlyReport.as_view())
 ]
