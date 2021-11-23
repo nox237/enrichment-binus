@@ -60,4 +60,29 @@ class ListMonthlyReport(views.APIView):
             result_request = activity.get_month_report(session)
             return response.Response({"status":"success", "results":result_request})
         else:
-            return response.Response({"status":"error", "message":"please use post request to insert username, password, and month"})
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+
+class ListAssignment(views.APIView):
+    """
+    API endpoint that allows user to be viewed list of assignment
+    """
+    serializer_class = serializers.AssignmentSerializer
+
+    def get(self, request):
+        return response.Response({"status":"error", "message":""})
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            username = serializer.validated_data.get('username')
+            password = serializer.validated_data.get('password')
+            session = requests.Session()
+            response_request = auth.login(session, username, password)
+            if response_request == "Error":
+                return response.Response({"status":"error", "message":"invalid username and password"})
+            activity.get_enrichment(session, response_request)
+            result_request = activity.get_assignment(session)
+            return response.Response({"status":"success", "results":result_request})
+        else:
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
