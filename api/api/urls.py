@@ -19,5 +19,6 @@ from endpoints import views
 urlpatterns = [
     path('api/list-logbook', views.ListLogbook.as_view()),
     path('api/list-assignment', views.ListAssignment.as_view()),
-    path('api/list-monthly-report', views.ListMonthlyReport.as_view())
+    path('api/list-monthly-report', views.ListMonthlyReport.as_view()),
+    path('api/upload-monthly-report', views.ListMonthlyReport.as_view())
 ]

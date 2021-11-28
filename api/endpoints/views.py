@@ -37,30 +37,6 @@ class ListLogbook(views.APIView):
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username, password, and month"})
 
-class ListMonthlyReport(views.APIView):
-    """
-    API endpoint that allows user to be viewed or edited Monthly Report Section
-    """
-    serializer_class = serializers.MonthlyReportSerializer
-
-    def get(self, request):
-        return response.Response({"status":"error", "message":""})
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            username = serializer.validated_data.get('username')
-            password = serializer.validated_data.get('password')
-            session = requests.Session()
-            response_request = auth.login(session, username, password)
-            if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"})
-            activity.get_enrichment(session, response_request)
-            result_request = activity.get_month_report(session)
-            return response.Response({"status":"success", "results":result_request})
-        else:
-            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
 
 class ListAssignment(views.APIView):
     """
@@ -86,3 +62,39 @@ class ListAssignment(views.APIView):
             return response.Response({"status":"success", "results":result_request})
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+
+class ListMonthlyReport(views.APIView):
+    """
+    API endpoint that allows user to be viewed or edited Monthly Report Section
+    """
+    serializer_class = serializers.MonthlyReportSerializer
+
+    def get(self, request):
+        return response.Response({"status":"error", "message":""})
+
+    def post(self, request, file):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            username = serializer.validated_data.get('username')
+            password = serializer.validated_data.get('password')
+            session = requests.Session()
+            response_request = auth.login(session, username, password)
+            if response_request == "Error":
+                return response.Response({"status":"error", "message":"invalid username and password"})
+            activity.get_enrichment(session, response_request)
+            result_request = activity.get_month_report(session)
+            return response.Response({"status":"success", "results":result_request})
+
+            file_upload = request.FILES.get()
+            content_type = file_uploaded.content_type
+            response = "POST API and you have uploaded a {} file".format(content_type)
+            return Response(response)
+
+        else:
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+
+# class UploadMonthlyReport(views.APIView):
+#     serializer_class = uploadFileSerializer
+
+ 

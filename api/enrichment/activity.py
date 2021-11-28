@@ -8,6 +8,9 @@ LOGBOOK_URL = "https://activity-enrichment.apps.binus.ac.id/LogBook/GetLogBook"
 MONTHLY_URL = "https://activity-enrichment.apps.binus.ac.id/LogBook/GetMonths"
 MONTHLY_REPORT_URL = "https://activity-enrichment.apps.binus.ac.id/MonthlyReport/GetMonthlyReportList"
 
+MONTHLY_REPORT_UPLOAD_URL = "https://activity-enrichment.apps.binus.ac.id/MonthlyReport/SaveMonthly"
+MONTHLY_REPORT_DELETE_URL = "https://activity-enrichment.apps.binus.ac.id/MonthlyReport/DeleteMonthlyReport"
+
 def get_enrichment(session, response):
     semester = []
     soup = bs(response.text, "html.parser")
@@ -44,3 +47,7 @@ def get_monthly(session):
 def get_month_report(session):
     response = session.get(MONTHLY_REPORT_URL)
     return json.loads(response.text)
+
+# payload month, note, reportfile(binary)
+def upload_monthly_report(session):
+    
