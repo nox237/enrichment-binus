@@ -15,3 +15,4 @@ stdiomask==0.0.6
 termcolor==1.1.0
 urllib3==1.26.7
 wcwidth==0.2.5
+colorama==0.4.4
