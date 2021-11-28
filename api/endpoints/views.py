@@ -45,7 +45,7 @@ class ListAssignment(views.APIView):
     serializer_class = serializers.AssignmentSerializer
 
     def get(self, request):
-        return response.Response({"status":"error", "message":""})
+        return response.Response({"status":"error", "message":"please use post request to insert username and password"})
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -70,7 +70,7 @@ class ListMonthlyReport(views.APIView):
     serializer_class = serializers.MonthlyReportSerializer
 
     def get(self, request):
-        return response.Response({"status":"error", "message":""})
+        return response.Response({"status":"error", "message":"please use post request to insert username and password"})
 
     def post(self, request, file):
         serializer = self.serializer_class(data=request.data)
@@ -93,8 +93,69 @@ class ListMonthlyReport(views.APIView):
 
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username and password"})
-
-# class UploadMonthlyReport(views.APIView):
-#     serializer_class = uploadFileSerializer
-
  
+class ListMonthly(views.APIView):
+    """
+    API endpoint for getting all available months in the semester
+    """
+    serializer_class = serializers.MonthlySerializer
+
+    def get(self, request):
+        return response.Response({"status":"error", "message":""})
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            username = serializer.validated_data.get('username')
+            password = serializer.validated_data.get('password')
+            session = requests.Session()
+            response_request = auth.login(session, username, password)
+            if response_request == "Error":
+                return response.Response({"status":"error", "message":"invalid username and password"})
+            activity.get_enrichment(session, response_request)
+            result_request = activity.get_monthly(session)
+            return response.Response({"status":"success", "results":result_request})
+        else:
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+
+
+class PostLogbook(views.APIView):
+    """
+    API endpoint for allowing user to submit multiple logbook
+    This API needs month index from ListMonths and also need logbookheaderId from the months data
+    
+    example: [{"model[Date]": "2021-11-03T00:00:00",
+    "model[Activity]": "Title Logbook",
+    "model[ClockIn]": "ClockIn Data",
+    "model[ClockOut]": "ClockOut Data",
+    "model[Description]": "Description Logbook", 
+    "model[flagjulyactive]": "false"}]
+    """
+    serializer_class = serializers.PostLogbookSerializer
+
+    def get(self, request):
+        return response.Response({"status":"error", "message":""})
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            username = serializer.validated_data.get('username')
+            password = serializer.validated_data.get('password')
+            month_idx = serializer.validated_data.get('month_idx')
+            logbookheaderid = serializer.validated_data.get('logbookheaderid')
+            logbook_json_data = serializer.validated_data.get('logbook')
+            session = requests.Session()
+            response_request = auth.login(session, username, password)
+            if response_request == "Error":
+                return response.Response({"status":"error", "message":"invalid username and password"})
+            activity.get_enrichment(session, response_request)
+            result_request = activity.post_logbook_report(session, logbook_json_data, activity.get_logbook(session, activity.get_monthly(session), month_idx), logbookheaderid)
+            return response.Response({"status":"success", "results":result_request})
+        else:
+            return response.Response({"status":"error", "message":"please use post request to insert username, password, month_idx, logbookheaderid, and logbook json array"})
+
+
+class UploadMonthlyReport(views.APIView):
+    serializer_class = uploadFileSerializer
