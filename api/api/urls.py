@@ -17,7 +17,9 @@ from django.urls import path
 from endpoints import views
 
 urlpatterns = [
+    path('api/list-monthly', views.ListMonthly.as_view()),
     path('api/list-logbook', views.ListLogbook.as_view()),
     path('api/list-assignment', views.ListAssignment.as_view()),
-    path('api/list-monthly-report', views.ListMonthlyReport.as_view())
+    path('api/list-monthly-report', views.ListMonthlyReport.as_view()),
+    path('api/post-logbook', views.PostLogbook.as_view()),
 ]

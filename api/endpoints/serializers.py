@@ -15,3 +15,16 @@ class AssignmentSerializer(serializers.Serializer):
     """Serializer for AssignmentSerializer"""
     username = serializers.CharField(max_length=50)
     password = serializers.CharField(max_length=50)
+
+class MonthlySerializer(serializers.Serializer):
+    """Serializer for MonthlySerializer"""
+    username = serializers.CharField(max_length=50)
+    password = serializers.CharField(max_length=50)
+
+class PostLogbookSerializer(serializers.Serializer):
+    """Serializer for PostLogbookSerializer"""
+    username = serializers.CharField(max_length=50)
+    password = serializers.CharField(max_length=50)
+    month_idx = serializers.IntegerField()
+    logbookheaderid = serializers.CharField(max_length=50)
+    logbook = serializers.JSONField()
