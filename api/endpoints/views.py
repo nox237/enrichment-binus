@@ -72,7 +72,8 @@ class ListMonthlyReport(views.APIView):
     def get(self, request):
         return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
 
-    def post(self, request, file):
+    def post(self, request):
+    # def post(self, request, file):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -86,10 +87,10 @@ class ListMonthlyReport(views.APIView):
             result_request = activity.get_month_report(session)
             return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
 
-            file_upload = request.FILES.get()
-            content_type = file_uploaded.content_type
-            response = "POST API and you have uploaded a {} file".format(content_type)
-            return Response(response, headers={'Access-Control-Allow-Origin':"*"})
+            # file_upload = request.FILES.get()
+            # content_type = file_uploaded.content_type
+            # response = "POST API and you have uploaded a {} file".format(content_type)
+            # return Response(response, headers={'Access-Control-Allow-Origin':"*"})
 
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
