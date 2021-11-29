@@ -15,7 +15,7 @@ class ListLogbook(views.APIView):
         """
         Return response to use post
         """
-        return response.Response({"status":"error", "message":"please use post request to insert username, password, and month"})
+        return response.Response({"status":"error", "message":"please use post request to insert username, password, and month"}, headers={'Access-Control-Allow-Origin':"*"})
 
     def post(self, request):
         """
@@ -30,12 +30,12 @@ class ListLogbook(views.APIView):
             session = requests.Session()
             response_request = auth.login(session, username, password)
             if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"})
+                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
             activity.get_enrichment(session, response_request)
             result_request = activity.get_logbook(session, activity.get_monthly(session), month)
-            return response.Response({"status":"success", "results":result_request})
+            return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
-            return response.Response({"status":"error", "message":"please use post request to insert username, password, and month"})
+            return response.Response({"status":"error", "message":"please use post request to insert username, password, and month"}, headers={'Access-Control-Allow-Origin':"*"})
 
 
 class ListAssignment(views.APIView):
@@ -45,7 +45,7 @@ class ListAssignment(views.APIView):
     serializer_class = serializers.AssignmentSerializer
 
     def get(self, request):
-        return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+        return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -56,12 +56,12 @@ class ListAssignment(views.APIView):
             session = requests.Session()
             response_request = auth.login(session, username, password)
             if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"})
+                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
             activity.get_enrichment(session, response_request)
             result_request = activity.get_assignment(session)
-            return response.Response({"status":"success", "results":result_request})
+            return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
-            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
 
 class ListMonthlyReport(views.APIView):
     """
@@ -70,7 +70,7 @@ class ListMonthlyReport(views.APIView):
     serializer_class = serializers.MonthlyReportSerializer
 
     def get(self, request):
-        return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+        return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
 
     def post(self, request, file):
         serializer = self.serializer_class(data=request.data)
@@ -81,7 +81,7 @@ class ListMonthlyReport(views.APIView):
             session = requests.Session()
             response_request = auth.login(session, username, password)
             if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"})
+                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
             activity.get_enrichment(session, response_request)
             result_request = activity.get_month_report(session)
             return response.Response({"status":"success", "results":result_request})
@@ -89,10 +89,10 @@ class ListMonthlyReport(views.APIView):
             file_upload = request.FILES.get()
             content_type = file_uploaded.content_type
             response = "POST API and you have uploaded a {} file".format(content_type)
-            return Response(response)
+            return Response(response, headers={'Access-Control-Allow-Origin':"*"})
 
         else:
-            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
  
 class ListMonthly(views.APIView):
     """
@@ -101,7 +101,7 @@ class ListMonthly(views.APIView):
     serializer_class = serializers.MonthlySerializer
 
     def get(self, request):
-        return response.Response({"status":"error", "message":""})
+        return response.Response({"status":"error", "message":""}, headers={'Access-Control-Allow-Origin':"*"})
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -112,12 +112,12 @@ class ListMonthly(views.APIView):
             session = requests.Session()
             response_request = auth.login(session, username, password)
             if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"})
+                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
             activity.get_enrichment(session, response_request)
             result_request = activity.get_monthly(session)
-            return response.Response({"status":"success", "results":result_request})
+            return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
-            return response.Response({"status":"error", "message":"please use post request to insert username and password"})
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
 
 
 class PostLogbook(views.APIView):
@@ -135,7 +135,7 @@ class PostLogbook(views.APIView):
     serializer_class = serializers.PostLogbookSerializer
 
     def get(self, request):
-        return response.Response({"status":"error", "message":""})
+        return response.Response({"status":"error", "message":""}, headers={'Access-Control-Allow-Origin':"*"})
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -149,13 +149,13 @@ class PostLogbook(views.APIView):
             session = requests.Session()
             response_request = auth.login(session, username, password)
             if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"})
+                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
             activity.get_enrichment(session, response_request)
             result_request = activity.post_logbook_report(session, logbook_json_data, activity.get_logbook(session, activity.get_monthly(session), month_idx), logbookheaderid)
-            return response.Response({"status":"success", "results":result_request})
+            return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
-            return response.Response({"status":"error", "message":"please use post request to insert username, password, month_idx, logbookheaderid, and logbook json array"})
+            return response.Response({"status":"error", "message":"please use post request to insert username, password, month_idx, logbookheaderid, and logbook json array"}, headers={'Access-Control-Allow-Origin':"*"})
 
 
-class UploadMonthlyReport(views.APIView):
-    serializer_class = uploadFileSerializer
+# class UploadMonthlyReport(views.APIView):
+#     serializer_class = uploadFileSerializer
