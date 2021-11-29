@@ -89,7 +89,7 @@ class ListMonthlyReport(views.APIView):
             file_upload = request.FILES.get()
             content_type = file_uploaded.content_type
             response = "POST API and you have uploaded a {} file".format(content_type)
-            return Response(response, headers={'Access-Control-Allow-Origin':"*"}, headers={'Access-Control-Allow-Origin':"*"})
+            return Response(response, headers={'Access-Control-Allow-Origin':"*"})
 
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
