@@ -19,6 +19,11 @@ def extract_unempty_data(data):
 MONTHLY_REPORT_UPLOAD_URL = "https://activity-enrichment.apps.binus.ac.id/MonthlyReport/SaveMonthly"
 MONTHLY_REPORT_DELETE_URL = "https://activity-enrichment.apps.binus.ac.id/MonthlyReport/DeleteMonthlyReport"
 
+def set_cookies_enrichment(session, cookies):
+    response = session.get(ACTIVITY_ENRICHMENT_URL, cookies=cookies)
+    print(response.text)
+    return session
+
 def get_enrichment(session, response):
     semester = []
     soup = bs(response.text, "html.parser")
@@ -37,30 +42,42 @@ def get_enrichment(session, response):
     response = session.get(ACTIVITY_SSOTOACTIVITY_URL, allow_redirects=True)
     return response
 
-def get_assignment(session):
+def get_assignment(session, cookies=None):
     # 0 for all month
     data = {'month': 0}
-    response = session.post(ASSIGNMENT_URL, data=data)
+    if cookies == None:
+        response = session.post(ASSIGNMENT_URL, data=data)
+    else:
+        response = session.post(ASSIGNMENT_URL, data=data, cookies=cookies)
     return json.loads(response.text)
 
-def get_logbook(session, monthly_data, input_idx):
+def get_logbook(session, monthly_data, input_idx, cookies=None):
     data = {'logBookHeaderID':monthly_data['data'][input_idx]['logBookHeaderID']}
-    response = session.post(LOGBOOK_URL, data=data)
+    if cookies == None:
+        response = session.post(LOGBOOK_URL, data=data)
+    else:
+        response = session.post(LOGBOOK_URL, data=data, cookies=cookies)
     return json.loads(response.text)
 
-def get_monthly(session):
-    response = session.get(MONTHLY_URL)
+def get_monthly(session, cookies=None):
+    if cookies == None:
+        response = session.get(MONTHLY_URL)
+    else:
+        response = session.get(MONTHLY_URL, cookies=cookies)
     return json.loads(response.text)
 
-def get_month_report(session):
-    response = session.get(MONTHLY_REPORT_URL)
+def get_month_report(session, cookies=None):
+    if cookies == None:
+        response = session.get(MONTHLY_REPORT_URL)
+    else:
+        response = session.get(MONTHLY_REPORT_URL, cookies=cookies)
     return json.loads(response.text)
 
 # payload month, note, reportfile(binary)
 def upload_monthly_report(session):
     pass
     
-def post_logbook_report(session, list_data, logbook_data, logbookheaderid):
+def post_logbook_report(session, list_data, logbook_data, logbookheaderid, cookies=None):
     response_list = []
     list_unempty_data = extract_unempty_data(logbook_data['data'])
     for lstdata in list_data:
@@ -76,6 +93,9 @@ def post_logbook_report(session, list_data, logbook_data, logbookheaderid):
         }
         if lstdata['model[Date]'] in list_unempty_data:
             post_data["model[ID]"] =list_unempty_data[lstdata['model[Date]']]
-        response = session.post(POST_LOGBOOK_URL, data=post_data)
+        if cookies == None:
+            response = session.post(POST_LOGBOOK_URL, data=post_data)
+        else:
+            response = session.post(POST_LOGBOOK_URL, data=post_data, cookies=cookies)
         response_list.append((response.status_code, response.text, lstdata['model[Date]']))
     return response_list

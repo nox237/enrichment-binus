@@ -123,13 +123,21 @@ if __name__ == "__main__":
         print()
         choice = -1
         while choice != 0 and choice != 1:
-            choice = int(input("[!] Please input [0] listing or [1] post data?\n>>> "))
+            try:
+                choice = int(input("[!] Please input [0] listing or [1] post data?\n>>> "))
+            except:
+                print('[!] Please input integer')
+
         if choice == 0:
-            while TYPE_LIST not in ("all", "logbook", "assignment", "monthlyreport"):
+            while True:
                 TYPE_LIST = input("[!] Please input type (all, logbook, assignment, monthlyreport)\n>>> ").lower()
+                if TYPE_LIST in ("all", "logbook", "assignment", "monthlyreport"):
+                    break
         else:
-            while POST_TYPE not in ("logbook"):
+            while True:
                 POST_TYPE = input("[!] Please input post (logbook)\n>>> ").lower()
+                if POST_TYPE in ("logbook"):
+                    break
         print()
 
     if TYPE_LIST in ("all", "logbook", "assignment", "monthlyreport") and POST_TYPE == "":
@@ -145,7 +153,7 @@ if __name__ == "__main__":
             cli.print_get_monthly(activity.get_month_report(session), months)
     elif POST_TYPE in ("logbook"):
         if POST_TYPE == "logbook":
-            print('[!] Preparing to ')
+            print('[!] Preparing to upload logbook data')
             if LOGBOOK_PATH == "":
                 print('[!] Please enter Logbook Path')
                 LOGBOOK_PATH = input("> ")

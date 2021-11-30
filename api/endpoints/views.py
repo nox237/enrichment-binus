@@ -5,6 +5,36 @@ from endpoints import serializers
 from enrichment import auth
 from enrichment import activity
 
+class GetCookiesLogin(views.APIView):
+    """
+    API endpoint for getting the user cookies
+    """
+    serializer_class = serializers.LoginSerializer
+
+    def get(self, request):
+        """
+        Return response to use post
+        """
+        return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
+
+    def post(self, request):
+        """
+        Return response containing user authenticated cookies
+        """
+
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data.get('username')
+            password = serializer.validated_data.get('password')
+            session = requests.Session()
+            response_request = auth.login(session, username, password)
+            if response_request == "Error":
+                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
+            activity.get_enrichment(session, response_request)
+            return response.Response({"status":"success", "cookies":session.cookies.get_dict()}, headers={'Access-Control-Allow-Origin':"*"})
+        else:
+            return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
+
 class ListLogbook(views.APIView):
     """
     API endpoint that allows users to be viewed or edited.
@@ -24,15 +54,10 @@ class ListLogbook(views.APIView):
 
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            username = serializer.validated_data.get('username')
-            password = serializer.validated_data.get('password')
+            cookies = serializer.validated_data.get('cookies')
             month = serializer.validated_data.get('month')
             session = requests.Session()
-            response_request = auth.login(session, username, password)
-            if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
-            activity.get_enrichment(session, response_request)
-            result_request = activity.get_logbook(session, activity.get_monthly(session), month)
+            result_request = activity.get_logbook(session, activity.get_monthly(session, cookies=cookies), month, cookies=cookies)
             return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username, password, and month"}, headers={'Access-Control-Allow-Origin':"*"})
@@ -51,14 +76,9 @@ class ListAssignment(views.APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            username = serializer.validated_data.get('username')
-            password = serializer.validated_data.get('password')
+            cookies = serializer.validated_data.get('cookies')
             session = requests.Session()
-            response_request = auth.login(session, username, password)
-            if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
-            activity.get_enrichment(session, response_request)
-            result_request = activity.get_assignment(session)
+            result_request = activity.get_assignment(session, cookies)
             return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
@@ -77,14 +97,9 @@ class ListMonthlyReport(views.APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            username = serializer.validated_data.get('username')
-            password = serializer.validated_data.get('password')
+            cookies = serializer.validated_data.get('cookies')
             session = requests.Session()
-            response_request = auth.login(session, username, password)
-            if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
-            activity.get_enrichment(session, response_request)
-            result_request = activity.get_month_report(session)
+            result_request = activity.get_month_report(session, cookies)
             return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
 
             # file_upload = request.FILES.get()
@@ -108,14 +123,9 @@ class ListMonthly(views.APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            username = serializer.validated_data.get('username')
-            password = serializer.validated_data.get('password')
+            cookies = serializer.validated_data.get('cookies')
             session = requests.Session()
-            response_request = auth.login(session, username, password)
-            if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
-            activity.get_enrichment(session, response_request)
-            result_request = activity.get_monthly(session)
+            result_request = activity.get_monthly(session, cookies)
             return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username and password"}, headers={'Access-Control-Allow-Origin':"*"})
@@ -142,17 +152,12 @@ class PostLogbook(views.APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            username = serializer.validated_data.get('username')
-            password = serializer.validated_data.get('password')
+            cookies = serializer.validated_data.get('cookies')
             month_idx = serializer.validated_data.get('month_idx')
             logbookheaderid = serializer.validated_data.get('logbookheaderid')
             logbook_json_data = serializer.validated_data.get('logbook')
             session = requests.Session()
-            response_request = auth.login(session, username, password)
-            if response_request == "Error":
-                return response.Response({"status":"error", "message":"invalid username and password"}, headers={'Access-Control-Allow-Origin':"*"})
-            activity.get_enrichment(session, response_request)
-            result_request = activity.post_logbook_report(session, logbook_json_data, activity.get_logbook(session, activity.get_monthly(session), month_idx), logbookheaderid)
+            result_request = activity.post_logbook_report(session, logbook_json_data, activity.get_logbook(session, activity.get_monthly(session, cookies), month_idx, cookies), logbookheaderid, cookies)
             return response.Response({"status":"success", "results":result_request}, headers={'Access-Control-Allow-Origin':"*"})
         else:
             return response.Response({"status":"error", "message":"please use post request to insert username, password, month_idx, logbookheaderid, and logbook json array"}, headers={'Access-Control-Allow-Origin':"*"})
